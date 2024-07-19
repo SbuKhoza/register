@@ -1,0 +1,32 @@
+body {
+  background-color: rgb(223, 255, 255);
+}
+
+
+
+.container {
+  background-color: antiquewhite;
+  margin: 1%;
+  border-radius: 1%;
+  width: 98%;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 0.3fr 1fr;
+  grid-template-areas: 
+  nav nav;
+}
+
+nav {
+  display: flex;
+}
+
+nav a {
+  text-decoration: none;
+  color: rgb(30, 103, 121);
+  font-size: 13px;
+}
+
+nav input {
+  height: 70px;
+  

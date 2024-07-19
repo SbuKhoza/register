@@ -1,0 +1,35 @@
+
+
+.container {
+    background-color: rgb(8, 8, 83);
+    display: grid;
+    height: 100vh;
+    width: 100%;
+    grid-template-columns: 0.5fr 1fr 1fr 0.5fr;
+    grid-template-rows: 0.3fr 0.2fr 0.3fr 1.7fr;
+    grid-template-areas: 'nav nav nav nav'
+    'nav2 nav2 nav2 nav2'
+    'nav3 nav3 nav3 nav3'
+    'body body body body'
+   
+}
+
+nav {
+    grid-area: nav;
+    background-color: rgb(231, 182, 118);
+}
+
+.nav2 {
+    grid-area: nav2;
+    background-color: rgb(211, 180, 180);
+}
+
+.nav3 {
+    grid-area: nav3;
+    background-color: aqua;
+}
+
+.body {
+    grid-area: body;
+    background-color: rgba(126, 170, 252, 0.8);
+}

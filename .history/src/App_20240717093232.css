@@ -1,0 +1,11 @@
+body {
+  background-color: rgb(223, 255, 255);
+}
+
+.container {
+  background-color: antiquewhite;posi
+  width: 95%;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}

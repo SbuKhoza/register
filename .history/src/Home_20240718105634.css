@@ -1,0 +1,90 @@
+
+
+.container {
+    
+    display: grid;
+    height: 100vh;
+    width: 100%;
+    grid-template-columns: 0.5fr 1fr 1fr 0.5fr;
+    grid-template-rows: 0.3fr 0.2fr 0.3fr 2fr;
+    grid-template-areas: 'nav nav nav nav'
+    'nav2 nav2 nav2 nav2'
+    'nav3 nav3 nav3 nav3'
+    'body body body body'
+   
+}
+
+nav {
+    grid-area: nav;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.logo {
+    width: 50px;
+}
+
+.search {
+    display: flex;
+    flex-direction: column;
+}
+
+.rad {
+    display: flex;
+}
+
+#search {
+    height: 40px;
+    width: 300px;
+    border-radius: 5px;
+}
+
+.nav2 {
+    grid-area: nav2;
+    text-align: center;
+    
+}
+
+
+.nav3 {
+    grid-area: nav3;
+    background-color: aqua;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.dash {
+    width: 80%;
+    height: 60px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:50px;
+   
+}
+
+.dash button {
+    width: 150px;
+    height: 50px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    
+}
+
+.main {
+    grid-area: body;
+    background-color: rgba(238, 249, 252, 0.8);
+    justify-content: center;
+    ali
+}

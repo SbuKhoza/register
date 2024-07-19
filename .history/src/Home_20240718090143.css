@@ -1,0 +1,26 @@
+
+
+.container {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 0.5fr 1fr 1fr 0.5fr;
+    grid-template-rows: 0.5fr 0.3fr 0.5fr 1.7fr;
+    grid-template-areas: 'nav nav nav nav'
+    'nav2 nav2 nav2 nav2'
+    'nav3 nav3 nav3 nav3'
+    'body body body body'
+   
+}
+
+nav {
+    grid-area: nav;
+}
+
+.nav2 {
+    grid-area: nav2;
+}
+
+nav3 {
+    grid-area: nav3;
+}
+
