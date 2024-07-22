@@ -1,0 +1,29 @@
+.r-form {
+    padding: 20px;
+    width: 50%;
+    margin: 0 auto;
+}
+
+.r-form input {
+    margin-top: 10px;
+    width: 80%;
+    height: 50px;
+    border-radius: 10px;
+}
+
+.r-form button {
+    margin-top: 15px;
+    width: 150px;
+    height: 50px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}

@@ -1,0 +1,41 @@
+
+.edit-employee {
+    margin: 10px;
+    width: 40%;
+}
+
+.edit-employee form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edit-employee label {
+    margin-bottom: 5px;
+}
+
+.edit-employee input[type="text"],
+.edit-employee input[type="email"],
+.edit-employee input[type="password"],
+.edit-employee input[type="file"] {
+    border: 1px solid black;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.edit-employee button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.edit-employee button:hover {
+    background-color: #45a049;
+}
+
+.edit-employee .error {
+    color: red;
+    font-size: 12px;
+}

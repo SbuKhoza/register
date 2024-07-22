@@ -1,0 +1,21 @@
+
+.Employee {
+    margin: 20px;
+    text
+}
+
+.employee-table {
+    width: 100%;
+    border: 1px solid black;
+}
+
+.employee-table th, .employee-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+.employee-table th {
+    background-color: #f2f2f2;
+}
+
