@@ -1,0 +1,33 @@
+.FEmployee {
+    width: 60%;
+
+}
+
+.FEmployee table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+.FEmployee th, .FEmployee td {
+    border: 1px solid #5f5d5d;
+    padding: 8px;
+}
+
+.FEmployee th {
+    background-color: #f2f2f2;
+}
+
+@media only screen and (min-width: 768px){
+    .container {
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        
+        justify-content: center;
+    
+}
+
+}
