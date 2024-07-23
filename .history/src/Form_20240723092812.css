@@ -29,7 +29,7 @@
 }
 
 @media only screen and (min-width: 768px){
-    .r-form {
+    .rform {
         flex-direction: column;
         width: 100%;
         height: 100vh;

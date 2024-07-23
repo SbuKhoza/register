@@ -1,8 +1,9 @@
-.Employee {
+.FEmployee {
     width: 60%;
+
 }
 
-.Employee table {
+.FEmployee table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
@@ -10,21 +11,17 @@
     text-align: left;
 }
 
-.Employee th, .FEmployee td {
+.FEmployee th, .FEmployee td {
     border: 1px solid #5f5d5d;
     padding: 8px;
 }
 
-.Employee th {
+.FEmployee th {
     background-color: #f2f2f2;
 }
 
-td {
-    border: 1px solid black;
-}
-
 @media only screen and (min-width: 768px){
-    .container {
+    .FEmplo {
         flex-direction: column;
         width: 100%;
         height: 100vh;

@@ -4,7 +4,7 @@ body {
 }
 
 @media only screen and (min-width: 768px){
-    .App {
+    .FEmployee {
         flex-direction: column;
         width: 100%;
         height: 100vh;

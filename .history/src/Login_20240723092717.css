@@ -22,7 +22,7 @@ form input {
 }
 
 @media only screen and (min-width: 768px){
-    .Login {
+    . {
         flex-direction: column;
         width: 100%;
         height: 100vh;

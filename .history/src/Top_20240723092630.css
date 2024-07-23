@@ -1,30 +1,30 @@
-.Employee {
+.Top {
+    margin: 20px;
     width: 60%;
 }
 
-.Employee table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 18px;
-    text-align: left;
+.Top h2 {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.Employee th, .FEmployee td {
+.Top table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.Top th, .Top td {
     border: 1px solid #5f5d5d;
     padding: 8px;
 }
 
-.Employee th {
+.Top th {
     background-color: #f2f2f2;
-}
-
-td {
-    border: 1px solid black;
+    text-align: left;
 }
 
 @media only screen and (min-width: 768px){
-    .container {
+    .Top  {
         flex-direction: column;
         width: 100%;
         height: 100vh;

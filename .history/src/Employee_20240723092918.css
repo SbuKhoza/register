@@ -24,7 +24,7 @@ td {
 }
 
 @media only screen and (min-width: 768px){
-    .container {
+    .FEmployee {
         flex-direction: column;
         width: 100%;
         height: 100vh;
