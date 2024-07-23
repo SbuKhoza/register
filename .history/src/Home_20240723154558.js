@@ -3,16 +3,17 @@ import './Home.css';
 import Top from './Top';
 import { useNavigate } from 'react-router-dom';
 
-// Sample employee data
+
 const employees = [
-    { id: 1, fname: 'Sbu', lname: 'Sbu' },
-    { id: 2, fname: 'Victor', lname: 'Victor' },
-    { id: 3, fname: 'Malloya', lname: 'Malloya' }
+    { id: 1, fname: 'John', lname: 'Doe' },
+    { id: 2, fname: 'Jane', lname: 'Smith' },
+    { id: 3, fname: 'Malloya', lname: 'Johnson' }
 ];
 
 function Home() {
     const [searchOption, setSearchOption] = useState('fname');
     const [searchValue, setSearchValue] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
     const navigate = useNavigate();
 
     const handleOptionChange = (event) => {
@@ -44,7 +45,7 @@ function Home() {
                 emp.id.toString().includes(searchValue)
             );
         }
-        navigate('/results', { state: { results } });
+        setSearchResults(results);
     };
 
     const handleLogout = () => {
@@ -52,29 +53,29 @@ function Home() {
     };
 
     return (
-        <div className="App">
-            <div className='container'>
-                <div className='heading'>
-                    <nav>
-                        <div className='logo'>
-                            <img src='logo.png' alt='logo'></img>
-                        </div>
+     <div className="App">
+         <div className='container'>
+            <div className='heading'>
+              <nav>
+               <div className='logo'>
+                  <img src='logo.png' alt='logo'></img>
+                </div>
 
-                        <div className='search'>
-                            <input type='text' placeholder='Search...' id='search'
-                                value={searchValue}
-                                onChange={handleSearchChange}
-                            ></input>
+                     <div className='search'>
+                         <input type='text' placeholder='Search...' id='search'
+                             value={searchValue}
+                             onChange={handleSearchChange}>
+                            </input>
                             <button onClick={handleSearch}>Search</button>
                             <div className='rad'>
-                                <input
-                                    type='radio'
-                                    id='nam'
-                                    name='searchOption'
-                                    value='fname'
-                                    checked={searchOption === 'fname'}
-                                    onChange={handleOptionChange}
-                                ></input>
+                             <input
+                                 type='radio'
+                                 id='nam'
+                                 name='searchOption'
+                                 value='fname'
+                                 checked={searchOption === 'fname'}
+                                 onChange={handleOptionChange}>
+                                </input>
                                 <label htmlFor='nam'>Employee Name</label>
                                 <input
                                     type='radio'
@@ -113,6 +114,17 @@ function Home() {
 
                 <div className='main'>
                     <Top />
+                    <div className='search-results'>
+                        {searchResults.length > 0 ? (
+                            <ul>
+                                {searchResults.map(emp => (
+                                    <li key={emp.id}>{emp.fname} {emp.lname} (ID: {emp.id})</li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No results found</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

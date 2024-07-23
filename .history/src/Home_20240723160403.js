@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 // Sample employee data
 const employees = [
-    { id: 1, fname: 'Sbu', lname: 'Sbu' },
-    { id: 2, fname: 'Victor', lname: 'Victor' },
-    { id: 3, fname: 'Malloya', lname: 'Malloya' }
+    { id: 1, fname: 'Sbu', lname: '' },
+    { id: 2, fname: 'V', lname: '' },
+    { id: 3, fname: 'Malloya', lname: '' }
 ];
 
 function Home() {

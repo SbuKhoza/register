@@ -3,16 +3,13 @@ import './Home.css';
 import Top from './Top';
 import { useNavigate } from 'react-router-dom';
 
-// Sample employee data
-const employees = [
-    { id: 1, fname: 'Sbu', lname: 'Sbu' },
-    { id: 2, fname: 'Victor', lname: 'Victor' },
-    { id: 3, fname: 'Malloya', lname: 'Malloya' }
-];
+
+
 
 function Home() {
     const [searchOption, setSearchOption] = useState('fname');
     const [searchValue, setSearchValue] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
     const navigate = useNavigate();
 
     const handleOptionChange = (event) => {
@@ -36,15 +33,15 @@ function Home() {
     const handleSearch = () => {
         let results = [];
         if (searchOption === 'fname') {
-            results = employees.filter(emp =>
+            
                 emp.fname.toLowerCase().includes(searchValue.toLowerCase())
             );
         } else if (searchOption === 'emp-id') {
-            results = employees.filter(emp =>
+           
                 emp.id.toString().includes(searchValue)
             );
         }
-        navigate('/results', { state: { results } });
+        setSearchResults(results);
     };
 
     const handleLogout = () => {
@@ -113,6 +110,17 @@ function Home() {
 
                 <div className='main'>
                     <Top />
+                    <div className='search-results'>
+                        {searchResults.length > 0 ? (
+                            <ul>
+                                {searchResults.map(emp => (
+                                    <li key={emp.id}>{emp.fname} {emp.lname} (ID: {emp.id})</li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No results found</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
