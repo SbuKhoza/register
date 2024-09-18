@@ -1,30 +1,46 @@
 .Employee {
-    width: 60%;
+    width: 80%;
+    margin: 0 auto; /* Center the container */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for better depth */
+    background-color: #fff; /* Ensure the background is white */
+    border-radius: 8px; /* Rounded corners for a modern look */
 }
 
 .Employee h2 {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 24px;
+    color: #333; /* Darker color for better readability */
 }
 
 .Employee table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    font-size: 18px;
+    font-size: 16px;
+    color: #333;
+}
+
+.Employee th, .Employee td {
+    border: 1px solid #ddd; /* Lighter border for a subtle look */
+    padding: 12px; /* Increased padding for better spacing */
     text-align: left;
 }
 
-.Employee th, .FEmployee td {
-    border: 1px solid #5f5d5d;
-    padding: 8px;
-}
-
 .Employee th {
-    background-color: #f2f2f2;
+    background-color: #f4f4f4; /* Slightly different background color for headers */
+    font-weight: bold;
 }
 
-td {
-    border: 1px solid black;
+.Employee tr:nth-child(even) {
+    background-color: #f9f9f9; /* Alternate row color for better readability */
 }
 
+.Employee tr:hover {
+    background-color: #f1f1f1; /* Highlight row on hover */
+}
+
+.Employee td {
+    border: 1px solid #ddd;
+}

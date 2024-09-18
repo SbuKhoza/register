@@ -3,7 +3,7 @@ import './Employee';
 import Employ from './Employ';
 import { useNavigate } from 'react-router-dom';
 
-function Home() {
+function Employee() {
     const [searchOption, setSearchOption] = useState('fname');
     const [searchValue, setSearchValue] = useState('');
     const navigate = useNavigate();
@@ -102,4 +102,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default Employee;

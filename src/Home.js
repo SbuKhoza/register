@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './Home.css';
-import Top from './Top';
 import { useNavigate } from 'react-router-dom';
-
+import { TextField, Button, RadioGroup, FormControl, FormControlLabel, Radio, IconButton, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'; // Import MUI components
+import Top from './Top';
+import Navigation from './components/Navigation';
 
 const employees = [
     { id: 1, fname: 'Sbu', lname: 'Sbu' },
@@ -13,6 +14,7 @@ const employees = [
 function Home() {
     const [searchOption, setSearchOption] = useState('fname');
     const [searchValue, setSearchValue] = useState('');
+    const [showDialog, setShowDialog] = useState(false); // State to control the dialog
     const navigate = useNavigate();
 
     const handleOptionChange = (event) => {
@@ -45,75 +47,69 @@ function Home() {
             );
         }
         navigate('/results', { state: { results } });
+        setShowDialog(false); // Close dialog after search
     };
 
-    const handleLogout = () => {
-        navigate('/');
+    // const handleLogout = () => {
+    //     navigate('/');
+    // };
+
+    const toggleDialog = () => {
+        setShowDialog(prev => !prev); // Toggle dialog visibility
     };
 
     return (
         <div className="App">
+
+            <Navigation/>
+
             <div className='container'>
-                <div className='heading'>
-                    <nav>
-                        <div className='logo'>
-                            <img src='logo.png' alt='logo'></img>
-                        </div>
-
-                        <div className='search'>
-                            <input type='text' placeholder='Search...' id='search'
-                                value={searchValue}
-                                onChange={handleSearchChange}
-                            ></input>
-                            <button onClick={handleSearch}>Search</button>
-                            <div className='rad'>
-                                <input
-                                    type='radio'
-                                    id='nam'
-                                    name='searchOption'
-                                    value='fname'
-                                    checked={searchOption === 'fname'}
-                                    onChange={handleOptionChange}
-                                ></input>
-                                <label htmlFor='nam'>Employee Name</label>
-                                <input
-                                    type='radio'
-                                    id='eid'
-                                    name='searchOption'
-                                    value='emp-id'
-                                    checked={searchOption === 'emp-id'}
-                                    onChange={handleOptionChange}
-                                ></input>
-                                <label htmlFor='eid'>Employee ID</label>
-                            </div>
-                        </div>
-
-                        <div className='logout'>
-                            <button type='button' className='btn' onClick={handleLogout}>Log out</button>
-                        </div>
-
-                        <div className='profile'>
-                            <img src='boy.png' alt='profile'></img>
-                        </div>
-                    </nav>
-                </div>
-
-                <div className='nav2'>
-                    <h1>Hi Malloya!</h1>
-                </div>
-
-                <div className='nav3'>
-                    <div className='dash'>
-                        <button type='button' className='btn' onClick={() => navigate('/home')}>Dashboard</button>
-                        <button type='button' className='btn' onClick={() => navigate('/employees')}>Employees</button>
-                        <button type='button' className='btn' onClick={() => navigate('/former-employees')}>Former Employees</button>
-                        <button type='button' className='btn' onClick={() => navigate('/register')}>Register</button>
-                    </div>
-                </div>
+                
 
                 <div className='main'>
                     <Top />
                 </div>
+
+                {/* Dialog Popup */}
+                <Dialog open={showDialog} onClose={toggleDialog}>
+                    <DialogTitle>Search Employees</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            label="Search"
+                            variant="outlined"
+                            value={searchValue}
+                            onChange={handleSearchChange}
+                            size="small"
+                            fullWidth
+                        />
+                        <FormControl component="fieldset" style={{ marginTop: '1rem' }}>
+                            <RadioGroup
+                                row
+                                value={searchOption}
+                                onChange={handleOptionChange}
+                            >
+                                <FormControlLabel
+                                    value="fname"
+                                    control={<Radio />}
+                                    label="Employee Name"
+                                />
+                                <FormControlLabel
+                                    value="emp-id"
+                                    control={<Radio />}
+                                    label="Employee ID"
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={toggleDialog} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={handleSearch} color="primary">
+                            Search
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div>
     );
