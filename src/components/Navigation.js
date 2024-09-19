@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Button, IconButton, Dialog, TextField, Box, Typography, Avatar, Menu, MenuItem, Drawer, List, ListItem, ListItemText, useMediaQuery, CircularProgress } from '@mui/material';
+import {
+  AppBar, Toolbar, Button, IconButton, Dialog, TextField, Box, Typography, Avatar, Menu, MenuItem, Drawer,
+  List, ListItem, ListItemText, useMediaQuery, CircularProgress
+} from '@mui/material';
 import { FaSearch, FaBars } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
@@ -13,6 +16,7 @@ const Navigation = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [displayName, setDisplayName] = useState(localStorage.getItem('displayName') || ''); // Retrieve saved name
+  const [profilePic, setProfilePic] = useState(localStorage.getItem('profilePic') || 'boy.png'); // Retrieve saved profile picture
   const [searchOpen, setSearchOpen] = useState(false);
   const [editedName, setEditedName] = useState(displayName);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -23,6 +27,11 @@ const Navigation = () => {
     // Save display name in localStorage whenever it changes
     localStorage.setItem('displayName', displayName);
   }, [displayName]);
+
+  useEffect(() => {
+    // Save profile picture in localStorage whenever it changes
+    localStorage.setItem('profilePic', profilePic);
+  }, [profilePic]);
 
   const handleLogout = () => {
     setLoading(true);
@@ -52,6 +61,17 @@ const Navigation = () => {
   const handleSaveProfile = () => {
     setDisplayName(editedName); // Save edited name as display name
     closeProfileDialog();
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfilePic(e.target.result); // Update the profile picture with the image data
+      };
+      reader.readAsDataURL(file); // Convert file to base64 URL
+    }
   };
 
   const toggleSearch = () => {
@@ -99,7 +119,7 @@ const Navigation = () => {
                   Logout
                 </Button>
                 <IconButton color="inherit" onClick={handleProfileClick}>
-                  <Avatar src="boy.png" alt="profile" />
+                  <Avatar src={profilePic} alt="profile" />
                 </IconButton>
                 <Menu
                   anchorEl={anchorEl}
@@ -199,10 +219,11 @@ const Navigation = () => {
         <Box sx={{ p: 3 }}>
           <Typography variant="h6">Edit Profile</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Avatar src="boy.png" alt="profile" sx={{ width: 100, height: 100 }} />
+            <Avatar src={profilePic} alt="profile" sx={{ width: 100, height: 100 }} />
           </Box>
-          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+          <Button variant="contained" component="label" color="primary" fullWidth sx={{ mt: 2 }}>
             Change Profile Picture
+            <input type="file" hidden accept="image/*" onChange={handleImageChange} />
           </Button>
 
           {/* Editable Display Name */}
