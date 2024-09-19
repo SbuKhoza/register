@@ -1,9 +1,9 @@
 import React from 'react';
 import { FaSearch } from 'react-icons/fa'; // Import the search icon
-import { IconButton, Button } from '@material-ui/core'; // Import material UI components
+// import { IconButton, Button } from '@material-ui/core'; // Import material UI components
 import { useNavigate } from 'react-router-dom'; // For navigation (React Router)
 import { useState } from 'react'; // For dialog state management
-
+import { IconButton, Button } from '../node_modules/@material-ui/core';
 
 function Navigation() {
   const navigate = useNavigate(); // Hook for navigation
