@@ -1,77 +1,237 @@
-import React from 'react';
-import { FaSearch } from 'react-icons/fa'; // Import the search icon
-// import { IconButton, Button } from '@material-ui/core'; // Import material UI components
-import { useNavigate } from 'react-router-dom'; // For navigation (React Router)
-import { useState } from 'react'; // For dialog state management
-import { IconButton, Button } from '../node_modules/@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { AppBar, Toolbar, Button, IconButton, Dialog, TextField, Box, Typography, Avatar, Menu, MenuItem, Drawer, List, ListItem, ListItemText, useMediaQuery, CircularProgress } from '@mui/material';
+import { FaSearch, FaBars } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
+import Form from './Form'; // Import the form component
 
-function Navigation() {
-  const navigate = useNavigate(); // Hook for navigation
-  const [dialogOpen, setDialogOpen] = useState(false); // State for dialog
+const Navigation = () => {
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Hamburger visible from 768px and below
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+  const [displayName, setDisplayName] = useState(localStorage.getItem('displayName') || ''); // Retrieve saved name
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [editedName, setEditedName] = useState(displayName);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formDialogOpen, setFormDialogOpen] = useState(false); // State for form dialog
+
+  useEffect(() => {
+    // Save display name in localStorage whenever it changes
+    localStorage.setItem('displayName', displayName);
+  }, [displayName]);
 
   const handleLogout = () => {
-    // Logic to handle logout
-    console.log("User logged out");
-    // Perform logout operations here
+    setLoading(true);
+    setTimeout(() => {
+      console.log('User logged out');
+      setLoading(false);
+    }, 1500); // Simulate a logout loading
   };
 
-  const toggleDialog = () => {
-    setDialogOpen(!dialogOpen); // Toggle dialog open state
+  const handleProfileClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openProfileDialog = () => {
+    setProfileDialogOpen(true);
+    handleProfileClose();
+  };
+
+  const closeProfileDialog = () => {
+    setProfileDialogOpen(false);
+  };
+
+  const handleSaveProfile = () => {
+    setDisplayName(editedName); // Save edited name as display name
+    closeProfileDialog();
+  };
+
+  const toggleSearch = () => {
+    setSearchOpen(!searchOpen);
+  };
+
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const openFormDialog = () => {
+    setFormDialogOpen(true);
+  };
+
+  const closeFormDialog = () => {
+    setFormDialogOpen(false);
   };
 
   return (
-    <div className='navv'>
-      <div className='heading'>
-        <nav>
-          <div className='logo'>
-            <img src='logo.png' alt='logo'></img>
-          </div>
+    <Box>
+      {/* Loader when loading */}
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <CircularProgress />
+        </Box>
+      )}
 
-          <div className='search'>
-            {/* Search icon for mobile screens */}
-            <IconButton onClick={toggleDialog} color="primary">
+      {/* AppBar with Toolbar */}
+      {!loading && (
+        <AppBar position="static" sx={{ backgroundColor: '#1976d2' }}>
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            {/* Logo */}
+            <div className="logo">
+              <h2>Malloya Group</h2>
+            </div>
+
+            {/* Mobile Hamburger Menu */}
+            {isMobile ? (
+              <IconButton color="inherit" onClick={toggleDrawer}>
+                <FaBars />
+              </IconButton>
+            ) : (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Button color="inherit" onClick={handleLogout}>
+                  Logout
+                </Button>
+                <IconButton color="inherit" onClick={handleProfileClick}>
+                  <Avatar src="boy.png" alt="profile" />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleProfileClose}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                >
+                  <MenuItem onClick={openProfileDialog}>Edit Profile</MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
+              </Box>
+            )}
+          </Toolbar>
+        </AppBar>
+      )}
+
+      {/* Drawer for Mobile Menu */}
+      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
+        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer} onKeyDown={toggleDrawer}>
+          <List>
+            <ListItem button onClick={() => navigate('/home')}>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+            <ListItem button onClick={() => navigate('/employees')}>
+              <ListItemText primary="Employees" />
+            </ListItem>
+            <ListItem button onClick={() => navigate('/former-employees')}>
+              <ListItemText primary="Former Employees" />
+            </ListItem>
+            <ListItem button onClick={handleLogout}>
+              <ListItemText primary="Logout" />
+            </ListItem>
+            <ListItem button>
+              <IconButton onClick={toggleSearch}>
+                <FaSearch />
+              </IconButton>
+              {searchOpen && (
+                <TextField
+                  size="small"
+                  placeholder="Search..."
+                  autoFocus
+                  onBlur={() => setSearchOpen(false)} // Close search field on blur
+                />
+              )}
+            </ListItem>
+          </List>
+        </Box>
+      </Drawer>
+
+      {/* Additional div for search, navigation buttons, and user name */}
+      {!isMobile && !loading && (
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-around', 
+          alignItems: 'center', 
+          p: 2, 
+          backgroundColor: '#e0f7fa' // Background color for navigation buttons
+        }}>
+          {/* Search Icon and Field */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton onClick={toggleSearch}>
               <FaSearch />
             </IconButton>
-          </div>
+            {searchOpen && (
+              <TextField
+                size="small"
+                placeholder="Search..."
+                autoFocus
+                onBlur={() => setSearchOpen(false)} // Close search field on blur
+              />
+            )}
+          </Box>
 
-          <div className='logout'>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleLogout}
-            >
-              Log out
+          {/* Navigation Buttons */}
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button color="inherit" onClick={() => navigate('/home')}>
+              Dashboard
             </Button>
-          </div>
+            <Button color="inherit" onClick={() => navigate('/employees')}>
+              Employees
+            </Button>
+            <Button color="inherit" onClick={() => navigate('/former-employees')}>
+              Former Employees
+            </Button>
+          </Box>
 
-          <div className='profile'>
-            <img src='boy.png' alt='profile'></img>
-          </div>
-        </nav>
+          {/* Logged in user */}
+          <Typography variant="h6" sx={{ typography: { sm: 'h6', xs: 'subtitle1' } }}>
+            {displayName || 'No Name Set'}
+          </Typography>
+        </Box>
+      )}
+
+      {/* Profile Popup Dialog */}
+      <Dialog open={profileDialogOpen} onClose={closeProfileDialog} fullWidth maxWidth="sm">
+        <Box sx={{ p: 3 }}>
+          <Typography variant="h6">Edit Profile</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Avatar src="boy.png" alt="profile" sx={{ width: 100, height: 100 }} />
+          </Box>
+          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+            Change Profile Picture
+          </Button>
+
+          {/* Editable Display Name */}
+          <TextField
+            label="Display Name"
+            fullWidth
+            value={editedName}
+            onChange={(e) => setEditedName(e.target.value)}
+            sx={{ mt: 2 }}
+          />
+          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleSaveProfile}>
+            Save
+          </Button>
+        </Box>
+      </Dialog>
+
+      {/* Add Employee Button */}
+      <div className="add">
+        <Button variant="contained" color="primary" onClick={openFormDialog}>
+          Add Employee
+        </Button>
       </div>
 
-      <div className='nav2'>
-        <h1>Hi Malloya!</h1>
-      </div>
-
-      <div className='nav3'>
-        <div className='dash'>
-          <Button variant="contained" color="primary" onClick={() => navigate('/home')}>
-            Dashboard
-          </Button>
-          <Button variant="contained" color="primary" onClick={() => navigate('/employees')}>
-            Employees
-          </Button>
-          <Button variant="contained" color="primary" onClick={() => navigate('/former-employees')}>
-            Former Employees
-          </Button>
-          <Button variant="contained" color="primary" onClick={() => navigate('/register')}>
-            Register
-          </Button>
-        </div>
-      </div>
-    </div>
+      {/* Form Popup Dialog */}
+      <Dialog open={formDialogOpen} onClose={closeFormDialog} fullWidth maxWidth="sm">
+        <Form />
+      </Dialog>
+    </Box>
   );
-}
+};
 
 export default Navigation;

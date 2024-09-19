@@ -3,8 +3,6 @@ import Home from './Home';
 import Login from './Login';
 import Employee from './Employee';
 import FEmployee from './FEmployee';
-import Register from './Register';
-import EditEmployee from './EditEmployee';
 import Top from './Top';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -17,8 +15,6 @@ function App() {
                     <Route path="/home" element={<Home />} />
                     <Route path="/employees" element={<Employee />} />
                     <Route path="/former-employees" element={<FEmployee />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/edit-employee/:id" element={<EditEmployee />} />
                     <Route path="/top" element={<Top />} />
                 </Routes>
             </BrowserRouter>

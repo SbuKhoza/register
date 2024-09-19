@@ -49,3 +49,44 @@
 .FEmployee tr:hover {
     background-color: #f1f1f1;
 }
+
+/* Full width on mobile */
+@media (max-width: 768px) {
+    .FEmployee {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+/* Styling for icons */
+.restore-icon, .delete-icon {
+    cursor: pointer;
+    margin: 0 10px; /* Add space between icons */
+    font-size: 24px; /* Adjust size if necessary */
+    transition: color 0.2s ease-in-out;
+}
+
+/* Color for Restore and Permanently Delete icons */
+.restore-icon {
+    color: #28a745; /* Green for Restore */
+}
+
+.delete-icon {
+    color: #FF0000; /* Red for Permanently Delete */
+}
+
+/* Hover effects */
+.restore-icon:hover {
+    color: #218838; /* Darker green on hover */
+}
+
+.delete-icon:hover {
+    color: #cc0000; /* Darker red on hover */
+}
+
+/* Ensure icons remain horizontal on mobile */
+@media (max-width: 768px) {
+    .restore-icon, .delete-icon {
+        margin: 0 10px; /* Maintain space between icons on mobile */
+    }
+}
