@@ -1,10 +1,11 @@
 .FEmployee {
-    width: 60%;
+    width: 90%;
     margin: 0 auto;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
 }
 
 .FEmployee h2 {
@@ -55,6 +56,76 @@
     .FEmployee {
         width: 100%;
         padding: 10px;
+    }
+
+    .FEmployee table {
+        font-size: 16px;
+    }
+
+    .FEmployee th, .FEmployee td {
+        padding: 10px;
+    }
+
+    .restore-icon, .delete-icon {
+        font-size: 20px;
+    }
+}
+
+/* Responsive design for very small screens (320px and below) */
+@media (max-width: 480px) {
+    .FEmployee h2 {
+        font-size: 20px;
+    }
+
+    .FEmployee table {
+        font-size: 14px;
+    }
+
+    .FEmployee th, .FEmployee td {
+        padding: 8px;
+    }
+}
+
+/* Responsive table layout for 320px screens */
+@media (max-width: 320px) {
+    .FEmployee {
+        padding: 10px;
+    }
+
+    .FEmployee table, .FEmployee thead, .FEmployee tbody, .FEmployee th, .FEmployee td, .FEmployee tr {
+        display: block;
+    }
+
+    .FEmployee tr {
+        margin-bottom: 15px;
+    }
+
+    .FEmployee th {
+        display: none; /* Hide table headers on very small screens */
+    }
+
+    .FEmployee td {
+        position: relative;
+        padding-left: 50%;
+        white-space: pre-line;
+        word-wrap: break-word;
+    }
+
+    .FEmployee td:before {
+        content: attr(data-label); /* Add labels as pseudo-elements */
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-left: 10px;
+        font-weight: bold;
+    }
+
+    .FEmployee h2 {
+        font-size: 18px;
+    }
+
+    .restore-icon, .delete-icon {
+        font-size: 18px;
     }
 }
 

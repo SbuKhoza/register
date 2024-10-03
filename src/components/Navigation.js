@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import Form from './Form'; // Import the form component
 
+
 const Navigation = () => {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -170,7 +171,7 @@ const Navigation = () => {
         </Box>
       </Drawer>
 
-      {/* Additional div for search, navigation buttons, and user name */}
+      {/* div for search, navigation buttons, and user name */}
       {!isMobile && !loading && (
         <Box sx={{ 
           display: 'flex', 
