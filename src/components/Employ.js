@@ -2,55 +2,87 @@ import '../Employee.css';
 import { useEffect, useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import axios from 'axios';
+import { getAuth } from 'firebase/auth';
 
 function Employ() {
     const [employees, setEmployees] = useState([]);
     const [open, setOpen] = useState(false);
     const [currentEmployee, setCurrentEmployee] = useState(null);
     const [editingIndex, setEditingIndex] = useState(null);
-    const [imageModalOpen, setImageModalOpen] = useState(false); // State for image enlargement
-    const [selectedImage, setSelectedImage] = useState(null);    // Store selected image for enlargement
+    const [imageModalOpen, setImageModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [error, setError] = useState('');
 
-    // Load employees from localStorage on component mount
+    const auth = getAuth();
+
+    const fetchEmployees = async () => {
+        try {
+            const user = auth.currentUser;
+            if (user) {
+                const idToken = await user.getIdToken();
+                const response = await axios.get('http://localhost:5000/api/employees', {
+                    headers: {
+                        Authorization: `Bearer ${idToken}`
+                    }
+                });
+                setEmployees(response.data);
+            }
+        } catch (err) {
+            setError('Failed to fetch employees');
+            console.error(err);
+        }
+    };
+
     useEffect(() => {
-        const storedEmployees = JSON.parse(localStorage.getItem('employees')) || [];
-        setEmployees(storedEmployees);
+        fetchEmployees();
     }, []);
 
-    // Handle deletion of an employee
-    const handleDelete = (index) => {
-        const updatedEmployees = [...employees];
-        const [deletedEmployee] = updatedEmployees.splice(index, 1);
-        setEmployees(updatedEmployees);
-        localStorage.setItem('employees', JSON.stringify(updatedEmployees));
+    // ... rest of the component remains similar, but replace localStorage operations with API calls
 
-        // Move the deleted employee to former employees
-        let formerEmployees = JSON.parse(localStorage.getItem('formerEmployees')) || [];
-        formerEmployees.push(deletedEmployee);
-        localStorage.setItem('formerEmployees', JSON.stringify(formerEmployees));
+    // Handle deletion of an employee
+    const handleDelete = async (id) => {
+        try {
+            const user = auth.currentUser;
+            if (user) {
+                const idToken = await user.getIdToken();
+                await axios.delete(`http://localhost:5000/api/employees/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${idToken}`
+                    }
+                });
+                fetchEmployees(); // Refresh the list
+            }
+        } catch (err) {
+            setError('Failed to delete employee');
+            console.error(err);
+        }
     };
 
     // Open the edit dialog
-    const handleOpenEdit = (index) => {
-        setCurrentEmployee(employees[index]);
-        setEditingIndex(index);
+    const handleOpenEdit = (employee) => {
+        setCurrentEmployee(employee);
         setOpen(true);
     };
 
-    // Close the edit dialog
-    const handleClose = () => {
-        setOpen(false);
-        setCurrentEmployee(null);
-        setEditingIndex(null);
-    };
-
     // Save the updated employee information
-    const handleSaveEdit = () => {
-        const updatedEmployees = [...employees];
-        updatedEmployees[editingIndex] = currentEmployee;
-        setEmployees(updatedEmployees);
-        localStorage.setItem('employees', JSON.stringify(updatedEmployees)); // Save the updated list
-        handleClose();
+    const handleSaveEdit = async () => {
+        try {
+            const user = auth.currentUser;
+            if (user && currentEmployee.id) {
+                const idToken = await user.getIdToken();
+                await axios.put(`http://localhost:5000/api/employees/${currentEmployee.id}`, currentEmployee, {
+                    headers: {
+                        Authorization: `Bearer ${idToken}`
+                    }
+                });
+                setOpen(false);
+                fetchEmployees();
+            }
+        } catch (err) {
+            setError('Failed to update employee');
+            console.error(err);
+        }
     };
 
     // Handle input changes
@@ -76,6 +108,7 @@ function Employ() {
     return (
         <div className="FEmployee">
             <h2>Employee List</h2>
+            {error && <p className="error">{error}</p>}
             <table>
                 <thead>
                     <tr>
@@ -89,8 +122,8 @@ function Employ() {
                     </tr>
                 </thead>
                 <tbody>
-                    {employees.map((employee, index) => (
-                        <tr key={index}>
+                    {employees.map((employee) => (
+                        <tr key={employee.id}>
                             <td>
                                 {employee.image && (
                                     <img
@@ -98,8 +131,8 @@ function Employ() {
                                         alt={`${employee.name} ${employee.sname}`}
                                         width="50"
                                         height="50"
-                                        style={{ cursor: 'pointer' }} // Add cursor style
-                                        onClick={() => handleImageClick(employee.image)} // Click to enlarge image
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => handleImageClick(employee.image)}
                                     />
                                 )}
                             </td>
@@ -109,8 +142,8 @@ function Employ() {
                             <td>{employee.phone}</td>
                             <td>{employee.idnum}</td>
                             <td>
-                                <EditIcon className="edit-icon" onClick={() => handleOpenEdit(index)} />
-                                <DeleteIcon className="delete-icon" onClick={() => handleDelete(index)} />
+                                <EditIcon className="edit-icon" onClick={() => handleOpenEdit(employee)} />
+                                <DeleteIcon className="delete-icon" onClick={() => handleDelete(employee.id)} />
                             </td>
                         </tr>
                     ))}
@@ -119,26 +152,10 @@ function Employ() {
 
             {/* MUI Dialog for editing employee */}
             {currentEmployee && (
-                <Dialog open={open} onClose={handleClose}>
+                <Dialog open={open} onClose={() => setOpen(false)}>
                     <DialogTitle>Edit Employee</DialogTitle>
                     <DialogContent>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => {
-                                const file = e.target.files[0];
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = (event) => {
-                                        setCurrentEmployee({ ...currentEmployee, image: event.target.result });
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            }}
-                        />
-                        {currentEmployee.image && (
-                            <img src={currentEmployee.image} alt="Employee" width="100" height="100" />
-                        )}
+                        {/* Handle image upload if needed */}
                         <TextField
                             margin="dense"
                             label="First Name"
@@ -179,9 +196,17 @@ function Employ() {
                             onChange={handleChange}
                             fullWidth
                         />
+                        <TextField
+                            margin="dense"
+                            label="Role"
+                            name="role"
+                            value={currentEmployee.role || ''}
+                            onChange={handleChange}
+                            fullWidth
+                        />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose} color="primary">Cancel</Button>
+                        <Button onClick={() => setOpen(false)} color="primary">Cancel</Button>
                         <Button onClick={handleSaveEdit} color="primary">Save</Button>
                     </DialogActions>
                 </Dialog>

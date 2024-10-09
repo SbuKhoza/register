@@ -1,21 +1,36 @@
 import './Login.css';
 import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
+import axios from 'axios';
 
 function Login() {
     const navigate = useNavigate();
+    const [error, setError] = useState('');
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-       
-        const username = event.target.username.value;
+        const email = event.target.username.value;
         const password = event.target.password.value;
 
-        if (username === 'malloya@gmail.com' && password === '123456') {
-  
+        try {
+            // Sign in with Firebase Auth
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Get ID token
+            const idToken = await user.getIdToken();
+
+            // Optionally, send ID token to backend for further verification or session management
+            // Example: const response = await axios.post('/api/auth/login', { token: idToken });
+
+            // Navigate to home after successful login
             navigate('/home');
-        } else {
-            alert('Invalid credentials');
+        } catch (err) {
+            setError('Invalid credentials');
+            console.error(err);
         }
     };
 
@@ -30,6 +45,7 @@ function Login() {
                     <label htmlFor='password'>Password</label><br></br>
                     <input type='password' id='password' name='password' placeholder='Enter Password' required></input><br></br>
                     <button type='submit'>Login</button>
+                    {error && <p className="error">{error}</p>}
                 </form>
             </div>
         </div>

@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Alert } from '@mui/material';
+import { storage } from '../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import axios from 'axios';
+import { getAuth } from 'firebase/auth';
 
 const Form = () => {
   const [formData, setFormData] = useState({
-    name: '', sname: '', email: '', phone: '', idnum: '', image: ''
+    name: '', sname: '', email: '', phone: '', idnum: '', role: '', imageFile: null
   });
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState('');
+
+  const auth = getAuth();
 
   const handleChange = (e) => {
     if (e.target.name === 'image') {
       const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({
-          ...formData,
-          image: reader.result
-        });
-      };
-      reader.readAsDataURL(file);
+      setFormData({
+        ...formData,
+        imageFile: file
+      });
     } else {
       setFormData({
         ...formData,
@@ -46,29 +49,63 @@ const Form = () => {
     } else if (!/^\d{5}$/.test(formData.idnum)) {
       errors.idnum = 'ID must be exactly 5 digits';
     }
+    if (!formData.role) {
+      errors.role = 'Role is required';
+    }
     return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = validate();
-    if (Object.keys(errors).length === 0) {
-      let employees = JSON.parse(localStorage.getItem('employees')) || [];
-      employees.push(formData);
-      localStorage.setItem('employees', JSON.stringify(employees));
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length !== 0) return;
 
-      setSuccessMessage('Saved successfully');
-      setFormData({ name: '', sname: '', email: '', phone: '', idnum: '', image: '' });
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        setError('User not authenticated');
+        return;
+      }
+
+      const idToken = await user.getIdToken();
+
+      let imageUrl = '';
+      if (formData.imageFile) {
+        const imageRef = ref(storage, `employee-images/${formData.imageFile.name}`);
+        const snapshot = await uploadBytes(imageRef, formData.imageFile);
+        imageUrl = await getDownloadURL(snapshot.ref);
+      }
+
+      const employeeData = {
+        name: formData.name,
+        sname: formData.sname,
+        email: formData.email,
+        phone: formData.phone,
+        idnum: formData.idnum,
+        role: formData.role,
+        image: imageUrl
+      };
+
+      await axios.post('http://localhost:5000/api/employees', employeeData, {
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        }
+      });
+
+      setSuccessMessage('Employee added successfully');
+      setFormData({ name: '', sname: '', email: '', phone: '', idnum: '', role: '', imageFile: null });
       setTimeout(() => setSuccessMessage(''), 3000);
-    } else {
-      setErrors(errors);
+    } catch (err) {
+      setError('Failed to add employee');
+      console.error(err);
     }
   };
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ padding: 3 }}>
       <Typography variant="h5" gutterBottom>
-        Register
+        Register Employee
       </Typography>
 
       <TextField
@@ -126,6 +163,17 @@ const Form = () => {
         margin="normal"
       />
 
+      <TextField
+        fullWidth
+        label="Role"
+        name="role"
+        value={formData.role}
+        onChange={handleChange}
+        error={!!errors.role}
+        helperText={errors.role}
+        margin="normal"
+      />
+
       <Button variant="contained" component="label" sx={{ marginTop: 2 }}>
         Upload Image
         <input type="file" hidden name="image" onChange={handleChange} />
@@ -138,6 +186,11 @@ const Form = () => {
       {successMessage && (
         <Alert severity="success" sx={{ marginTop: 2 }}>
           {successMessage}
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" sx={{ marginTop: 2 }}>
+          {error}
         </Alert>
       )}
     </Box>
