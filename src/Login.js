@@ -1,21 +1,26 @@
 import './Login.css';
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from './firebase';  // Import the firebase auth instance
 
 function Login() {
     const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-       
-        const username = event.target.username.value;
+        const email = event.target.username.value;
         const password = event.target.password.value;
 
-        if (username === 'malloya@gmail.com' && password === '123456') {
-  
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            // Navigate to the admin homepage on successful login
             navigate('/home');
-        } else {
+        } catch (error) {
             alert('Invalid credentials');
+            console.error('Error during login:', error.message);
         }
     };
 

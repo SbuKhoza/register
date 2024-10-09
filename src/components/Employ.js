@@ -1,33 +1,34 @@
+// Employ.js
 import '../Employee.css';
 import { useEffect, useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { db, storage } from '../firebase';
+import { collection, getDocs, deleteDoc, doc, addDoc } from 'firebase/firestore';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 
 function Employ() {
     const [employees, setEmployees] = useState([]);
     const [open, setOpen] = useState(false);
     const [currentEmployee, setCurrentEmployee] = useState(null);
     const [editingIndex, setEditingIndex] = useState(null);
-    const [imageModalOpen, setImageModalOpen] = useState(false); // State for image enlargement
-    const [selectedImage, setSelectedImage] = useState(null);    // Store selected image for enlargement
+    const [imageModalOpen, setImageModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
 
-    // Load employees from localStorage on component mount
+    // Load employees from Firestore on component mount
     useEffect(() => {
-        const storedEmployees = JSON.parse(localStorage.getItem('employees')) || [];
-        setEmployees(storedEmployees);
+        const fetchEmployees = async () => {
+            const querySnapshot = await getDocs(collection(db, 'employees'));
+            const employeesData = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+            setEmployees(employeesData);
+        };
+        fetchEmployees();
     }, []);
 
     // Handle deletion of an employee
-    const handleDelete = (index) => {
-        const updatedEmployees = [...employees];
-        const [deletedEmployee] = updatedEmployees.splice(index, 1);
-        setEmployees(updatedEmployees);
-        localStorage.setItem('employees', JSON.stringify(updatedEmployees));
-
-        // Move the deleted employee to former employees
-        let formerEmployees = JSON.parse(localStorage.getItem('formerEmployees')) || [];
-        formerEmployees.push(deletedEmployee);
-        localStorage.setItem('formerEmployees', JSON.stringify(formerEmployees));
+    const handleDelete = async (id) => {
+        await deleteDoc(doc(db, 'employees', id));
+        setEmployees(employees.filter(employee => employee.id !== id));
     };
 
     // Open the edit dialog
@@ -45,11 +46,21 @@ function Employ() {
     };
 
     // Save the updated employee information
-    const handleSaveEdit = () => {
+    const handleSaveEdit = async () => {
         const updatedEmployees = [...employees];
+        if (currentEmployee.image) {
+            const imageRef = ref(storage, `employees/${currentEmployee.email}`);
+            await uploadString(imageRef, currentEmployee.image, 'data_url');
+            const imageUrl = await getDownloadURL(imageRef);
+            currentEmployee.image = imageUrl; // Update with the new image URL
+        }
+
+        // Update the employee record in Firestore
+        await deleteDoc(doc(db, 'employees', currentEmployee.id)); // Delete old record
+        await addDoc(collection(db, 'employees'), currentEmployee); // Add updated record
+
         updatedEmployees[editingIndex] = currentEmployee;
         setEmployees(updatedEmployees);
-        localStorage.setItem('employees', JSON.stringify(updatedEmployees)); // Save the updated list
         handleClose();
     };
 
@@ -110,7 +121,7 @@ function Employ() {
                             <td>{employee.idnum}</td>
                             <td>
                                 <EditIcon className="edit-icon" onClick={() => handleOpenEdit(index)} />
-                                <DeleteIcon className="delete-icon" onClick={() => handleDelete(index)} />
+                                <DeleteIcon className="delete-icon" onClick={() => handleDelete(employee.id)} />
                             </td>
                         </tr>
                     ))}

@@ -1,9 +1,18 @@
+// Form.js
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Alert } from '@mui/material';
+import { db, storage } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 
 const Form = () => {
   const [formData, setFormData] = useState({
-    name: '', sname: '', email: '', phone: '', idnum: '', image: ''
+    name: '',
+    sname: '',
+    email: '',
+    phone: '',
+    idnum: '',
+    image: ''
   });
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
@@ -49,17 +58,34 @@ const Form = () => {
     return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = validate();
     if (Object.keys(errors).length === 0) {
-      let employees = JSON.parse(localStorage.getItem('employees')) || [];
-      employees.push(formData);
-      localStorage.setItem('employees', JSON.stringify(employees));
+      try {
+        let imageUrl = '';
+        if (formData.image) {
+          const imageRef = ref(storage, `employees/${formData.email}`);
+          await uploadString(imageRef, formData.image, 'data_url');
+          imageUrl = await getDownloadURL(imageRef);
+        }
 
-      setSuccessMessage('Saved successfully');
-      setFormData({ name: '', sname: '', email: '', phone: '', idnum: '', image: '' });
-      setTimeout(() => setSuccessMessage(''), 3000);
+        await addDoc(collection(db, 'employees'), {
+          name: formData.name,
+          sname: formData.sname,
+          email: formData.email,
+          phone: formData.phone,
+          idnum: formData.idnum,
+          image: imageUrl
+        });
+
+        setSuccessMessage('Employee saved successfully');
+        setFormData({ name: '', sname: '', email: '', phone: '', idnum: '', image: '' });
+        setTimeout(() => setSuccessMessage(''), 3000);
+      } catch (error) {
+        console.error('Error saving employee:', error);
+        setErrors({ submit: 'Failed to save employee. Please try again.' });
+      }
     } else {
       setErrors(errors);
     }
@@ -68,7 +94,7 @@ const Form = () => {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ padding: 3 }}>
       <Typography variant="h5" gutterBottom>
-        Register
+        Register Employee
       </Typography>
 
       <TextField
@@ -138,6 +164,12 @@ const Form = () => {
       {successMessage && (
         <Alert severity="success" sx={{ marginTop: 2 }}>
           {successMessage}
+        </Alert>
+      )}
+
+      {errors.submit && (
+        <Alert severity="error" sx={{ marginTop: 2 }}>
+          {errors.submit}
         </Alert>
       )}
     </Box>

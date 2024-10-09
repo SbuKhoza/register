@@ -11,6 +11,11 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "firebase": "^10.14.0",
+    "firebase-admin": "^12.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
@@ -43,5 +48,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "Add Employee: Register new employees with their details.\r View Employees: Browse the list of existing and former employees.\r Search Employees: Quickly find employees using the search functionality.\r Update Employee: Modify existing employee details.\r Delete Employee: Remove employee records from the system.",
+  "main": "server.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
