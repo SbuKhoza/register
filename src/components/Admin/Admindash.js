@@ -94,7 +94,7 @@ function Admindash() {
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="primary" onClick={() => navigate('/manage-admins')}>
+          <Button variant="contained" color="primary" onClick={() => navigate('/manageadmin')}>
             Manage Admins
           </Button>
         </Grid>

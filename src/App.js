@@ -9,6 +9,7 @@ import Top from './Top';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ViewEmployees from './ViewEmployees';
 import Profile from './Profile';
+import ManageAdmin from './ManageAdmin';
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                     <Route path="/" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/manageadmin" element={<ManageAdmin />} />
                     <Route path="/viewemployees" element={<ViewEmployees />} />
                     <Route path="/home" element={<Home />} />
                     <Route path="/employees" element={<Employee />} />
